@@ -1,24 +1,15 @@
-# task3
+# Задание 3. Список дел.
 
-## Project setup
-```
-npm install
-```
+#### Разработчик: Быстров Евгений (Морские дьяволы): [Ссылка ВК](https://vk.com/bystroveugene)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+****
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## **Описание задания**
+Реализовать список дел с системой приоритетов и возможностью объединения дел в коллекции. Также должна быть реализована возможность сортировки списка дел и списка коллекций
 
-### Lints and fixes files
-```
-npm run lint
-```
+## **Общие требования**
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+* Для стилизации допустимо использование Bootstrap
+* Использовать Vue.
+* Для настройки использовать окружения - VueCLI
+* Применение Vuex и Vue Router - рекомендуется

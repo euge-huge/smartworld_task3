@@ -1,32 +1,67 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div>
+    <div class="app-wrapper">
+      <Sidebar/>
+      <div class="app-content">
+        <div class="tasks">
+          <div class="task-item" v-for="task in currentList[0].tasks" :key="task.id">
+            <div>
+              <input type="checkbox">
+              <span>{{task.title}}</span> 
+            </div>
+            
+            <div>
+              <span>12.05.2018 12:00</span>
+              <button class="btn btn-danger">&times;</button>
+            </div>
+          </div>
+          <TaskItem/>
+        </div>
+        <AddItemForm/>
+      </div>
+      
     </div>
-    <router-view />
   </div>
 </template>
 
-<style lang="less">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+<script>
+import Sidebar from "./components/Sidebar.vue";
+import TaskItem from "./components/TaskItem.vue";
+import AddItemForm from "./components/AddItemForm.vue";
+import {mapState, mapMutations} from 'vuex'
+export default {
+  components: {
+    Sidebar,
+    TaskItem,
+    AddItemForm
+  },
+  data: () => ({
+    
+  }),
+  computed: {
+    ...mapState(['currentList'])
+  },
+  beforeMount() {
+    this.setCurrentList(1)
+  },
+  methods: {
+    ...mapMutations(['setCurrentList'])
   }
 }
+</script>
+
+<style lang="less">
+  @import url("./assets/css/bootstrap.min.css");
+
+  .app-wrapper {
+    display: flex;
+  }
+
+  .app-content {
+    padding-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
 </style>

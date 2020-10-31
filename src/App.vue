@@ -3,23 +3,16 @@
     <div class="app-wrapper">
       <Sidebar/>
       <div class="app-content">
-        <div class="tasks">
-          <div class="task-item" v-for="task in currentList[0].tasks" :key="task.id">
-            <div>
-              <input type="checkbox">
-              <span>{{task.title}}</span> 
-            </div>
-            
-            <div>
-              <span>12.05.2018 12:00</span>
-              <button class="btn btn-danger">&times;</button>
-            </div>
-          </div>
-          <TaskItem/>
+        <div v-if="currentList" class="tasks">
+          <span v-if="!currentList.tasks.length">Задач пока нет!</span>
+          <TaskItem v-for="task in currentList.tasks" :key="task.id" :task="task" />
+        </div>
+        
+        <div v-else class="no-tasks">
+          Выберите список слева
         </div>
         <AddItemForm/>
       </div>
-      
     </div>
   </div>
 </template>
@@ -28,24 +21,15 @@
 import Sidebar from "./components/Sidebar.vue";
 import TaskItem from "./components/TaskItem.vue";
 import AddItemForm from "./components/AddItemForm.vue";
-import {mapState, mapMutations} from 'vuex'
+import {mapState} from 'vuex'
 export default {
   components: {
     Sidebar,
     TaskItem,
     AddItemForm
   },
-  data: () => ({
-    
-  }),
   computed: {
     ...mapState(['currentList'])
-  },
-  beforeMount() {
-    this.setCurrentList(1)
-  },
-  methods: {
-    ...mapMutations(['setCurrentList'])
   }
 }
 </script>

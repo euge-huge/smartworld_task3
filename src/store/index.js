@@ -15,10 +15,9 @@ export default new Vuex.Store({
         {id: 1, title: "2Купить че-то", completed: false},
         {id: 2, title: "2Купить че-то 2", completed: false},
         {id: 3, title: "2Купить че-то 3", completed: false},
-      ]},
-      {id: 3, title: "На отдых", tasks: []},
-      {id: 4, title: "Сделать На учебе", tasks: []},
+      ]}
     ],
+
     currentList: null,
   },
   getters: {
@@ -29,23 +28,26 @@ export default new Vuex.Store({
     deleteList(state, id) {
       state.lists = state.lists.filter(list => list.id !== id)
     },
+
     addNewList(state, newList) {
-      newList.tasks = []
       let lists = state.lists
       lists.push(newList)
       state.lists = lists
     },
 
     addNewTask(state, toAdd) {
-      let list = state.lists.filter(list => list.id == toAdd.id)[0].tasks
-      list.push(toAdd.newT)
-
-      state.lists.filter(list => list.id == toAdd.id)[0].tasks = list
-      console.log(list)
-      console.log(toAdd.newT)
+      let tasks = state.lists.find((list) => (list.id == toAdd.idOfList)).tasks
+      tasks.push(toAdd.newTask)
+      state.lists.find((list) => (list.id == toAdd.idOfList)).tasks = tasks
     },
+
+    deleteTask(state, toDelete) {
+      state.lists.find((list) => (list.id == toDelete.currId)).tasks = state.lists.find((list) => (list.id == toDelete.currId)).tasks.filter(task => task.id != toDelete.taskId)
+      console.log(tasks)
+    },
+
     setCurrentList(state, id) {
-      state.currentList = state.lists.filter(list => list.id == id)
+      state.currentList = state.lists.find(list => list.id == id)
     }
   },
   actions: {

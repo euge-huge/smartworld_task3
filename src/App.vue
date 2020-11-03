@@ -4,13 +4,14 @@
       <Sidebar/>
       <div class="app-content">
         <div v-if="currentList" class="tasks">
-          <span v-if="!currentList.tasks.length">Задач пока нет!</span>
-          <TaskItem v-for="task in currentList.tasks" :key="task.id" :task="task" />
+          <MessageLog v-if="!currentList.tasks.length" msg="Задач пока нет" sub="Добавьте новую, используя форму ниже"/>
+          <TaskItem v-for="task in currentList.tasks" :key="task.id" :task="task"/>
         </div>
         
-        <div v-else class="no-tasks">
-          Выберите список слева
+        <div v-else class="tasks no">
+          <MessageLog msg="Нет активного списка" sub="Выберите список слева, или создайте новый, если его нет"/>
         </div>
+        
         <AddItemForm/>
       </div>
     </div>
@@ -21,12 +22,14 @@
 import Sidebar from "./components/Sidebar.vue";
 import TaskItem from "./components/TaskItem.vue";
 import AddItemForm from "./components/AddItemForm.vue";
+import MessageLog from "./components/MessageLog.vue";
 import {mapState} from 'vuex'
 export default {
   components: {
     Sidebar,
     TaskItem,
-    AddItemForm
+    AddItemForm,
+    MessageLog
   },
   computed: {
     ...mapState(['currentList'])
@@ -47,5 +50,13 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+  }
+
+  .tasks {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 </style>

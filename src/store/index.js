@@ -7,14 +7,14 @@ export default new Vuex.Store({
   state: {
     lists: [
       {id: 1, title: "Список дел на 21.12", tasks: [
-        {id: 1, title: "Купить че-то", completed: false},
-        {id: 2, title: "Купить че-то 2", completed: false},
-        {id: 3, title: "Купить че-то 3", completed: false},
+        {id: 1, title: "Купить молоко", createdAt: 1327611110417 ,completed: false},
+        {id: 2, title: "Сделать домашку", createdAt: 1327611110417 ,completed: false},
+        {id: 3, title: "Сходить в кино", createdAt: 1327611110417 ,completed: false},
       ]},
       {id: 2, title: "Купить в магазине", tasks: [
-        {id: 1, title: "2Купить че-то", completed: false},
-        {id: 2, title: "2Купить че-то 2", completed: false},
-        {id: 3, title: "2Купить че-то 3", completed: false},
+        {id: 1, title: "Мороженное", createdAt: 1327611110417 ,completed: true},
+        {id: 2, title: "Хлеб", createdAt: 1327611110417 ,completed: true},
+        {id: 3, title: "Корм для рыбки", createdAt: 1327611110417 , completed: false},
       ]}
     ],
 
@@ -41,9 +41,15 @@ export default new Vuex.Store({
       state.lists.find((list) => (list.id == toAdd.idOfList)).tasks = tasks
     },
 
+    updateTask(state, toUpdate) {
+      console.log(toUpdate)
+      console.log(state.lists.find(list => (list.id == toUpdate.currentListId)).tasks.find(task => task.id = toUpdate.taskToUpdate.id))
+
+      //state.lists.find(list => (list.id == toUpdate.currentListId)).tasks.find(task => task.id = toUpdate.taskToUpdate.id) = toUpdate.taskToUpdate
+    },
+
     deleteTask(state, toDelete) {
       state.lists.find((list) => (list.id == toDelete.currId)).tasks = state.lists.find((list) => (list.id == toDelete.currId)).tasks.filter(task => task.id != toDelete.taskId)
-      console.log(tasks)
     },
 
     setCurrentList(state, id) {

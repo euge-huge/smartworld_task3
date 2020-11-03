@@ -8,7 +8,7 @@
   <input class="form-check-input" type="checkbox" id="importance-check" value="option1" >
   <label class="form-check-label" for="importance-check">Срочное</label>
 </div>
-  <button type="submit" class="btn btn-primary" @click.prevent="addNew">Добавить</button>
+  <button type="submit" class="btn btn-primary" @click.prevent="addNew" :disabled="!currentList" >Добавить</button>
 </form>
 </template>
 
@@ -27,7 +27,7 @@ export default {
     addNew() {
       if (this.title.trim()) {
         let toAdd = {
-        newTask: {id: Date.now(), title: this.title, completed: false},
+        newTask: {id: Date.now(), title: this.title, completed: false, createdAt: Date.now()},
         idOfList: this.currentList.id
       }
       this.addNewTask(toAdd);
@@ -42,6 +42,7 @@ export default {
 <style>
   .form-inline {
     padding: 30px 0px;
+    margin: 20px;
     justify-content: center;
     border-top: 1px solid #eee;
   }

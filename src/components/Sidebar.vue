@@ -8,18 +8,21 @@
 			</select>
 		</div>
 
-		<ul class="list-group">
-			<li class="list-link list-group-item " v-for="list in lists" :key="list.id" @click="listClick(list.id)">
+		<ul v-if="lists.length" class="list-group">
+			<li class="list-link list-group-item " v-for="list in lists" :key="list.id" @click="listClick(list.id, $event)">
 				{{list.title}}
-				<button class="delete-list btn btn-danger" @click.prevent="deleteList(list.id)">
-					<span>&times;</span> 
-				</button>
+				<div class="cl-btn-7" @click.prevent="() => {deleteList(list.id); setCurrentList(null)}">
+				</div>
 			</li>
 		</ul>
 
+		<div v-else class="text-center text-muted">
+			Списков пока нет
+		</div>
+
 		<form class="create-list-form">
 			<div class="form-group">
-				<label for="createListItem">Название нового списка</label>
+				<label for="createListItem">Создайте список</label>
 				<input type="text" class="form-control" id="createListItem" v-model="titleOfNewList">
 			</div>
 			<button type="submit" class="btn btn-primary" @click.prevent="createListBtn" >Создать</button>
@@ -42,13 +45,12 @@ export default {
 		...mapMutations(['setCurrentList']),
 
 		listClick(id) {
-        console.log(id);
-			this.setCurrentList(id)
-			// e.target.parentElement.children.forEach(i => {
-			// 	console.log(i.className)
-			// 	i.className = i.className.replaceAll('active', "")
-			// })
-			// e.target.className = e.target.className.concat('active')
+			this.setCurrentList(id, event)
+			event.target.parentElement.children.forEach(i => {
+				console.log(i.className)
+				i.className = i.className.replaceAll('active', "")
+			})
+			event.target.className = event.target.className.concat('active')
 
 		},
 		createListBtn() {
@@ -113,14 +115,56 @@ export default {
 				
 		}
 
-		&:hover .delete-list {
-			display: flex;
+		&:hover .cl-btn-7 {
+			display: inline-block;
 		}
 	}
 
 	.create-list-form {
 		width: 80%;
-		margin: 0 auto;
+		margin: 20px auto 0 auto;
 		text-align: center;
 	}
+
+	.cl-btn-7 {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 40px;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+}
+.cl-btn-7:before {
+    content: '+';
+    color: #dc3545;
+    position: absolute;
+    z-index: 2;
+    transform: rotate(45deg);
+    font-size: 25px;
+    line-height: 1;
+    top: -2px;
+    left: 3px;
+    transition: all 0.3s cubic-bezier(0.77, 0, 0.2, 0.85);
+}
+.cl-btn-7:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 100%;
+    background: #dc3545;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.77, 0, 0.2, 0.85);
+    transform: scale(0.01);
+}
+.cl-btn-7:hover:after {
+    transform: scale(1);
+}
+.cl-btn-7:hover:before {
+    transform: scale(0.8) rotate(45deg);
+    color: #fff;
+}
 </style>

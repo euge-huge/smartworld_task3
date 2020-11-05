@@ -1,9 +1,9 @@
 <template>
 	<div id="lists-sidebar">
 		<div class="lists-filter input-group mb-3">
-			<select class="custom-select" id="inputGroupSelect01">
+			<select v-model="selectFilter" @change="filterList" class="custom-select" id="list-filter" >
 				<option value="all" selected>Все</option>
-				<option value="done">Выполненные</option>
+				<option value="done">Завершенные</option>
 				<option value="not-done">Незавершенные</option>
 			</select>
 		</div>
@@ -11,7 +11,7 @@
 		<ul v-if="lists.length" class="list-group">
 			<li class="list-link list-group-item " v-for="list in lists" :key="list.id" @click="listClick(list.id, $event)">
 				{{list.title}}
-				<div class="cl-btn-7" @click.prevent="() => {deleteList(list.id); setCurrentList(null)}">
+				<div class="cl-btn-7" @click.prevent="() => {deleteList(list.id); setCurrentList(null); filterList()}">
 				</div>
 			</li>
 		</ul>
@@ -31,23 +31,41 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState, mapActions, mapMutations, mapGetters } from "vuex";
 export default {
 	name: 'sidebar-menu',
 	data: () => ({
 		titleOfNewList: "",
+		selectFilter: "all",
+		lists: []
 	}),
 	computed: {
-		...mapState(['lists'])
+		...mapGetters(['getAllLists','getDoneLists','getNotDoneLists'])
+	},
+	beforeMount() {
+		this.lists = this.getAllLists
 	},
 	methods: {
 		...mapActions(['deleteList', 'addNewList']),
 		...mapMutations(['setCurrentList']),
 
+		filterList() {
+			switch (this.selectFilter) {
+				case "all":
+					this.lists = this.getAllLists
+					break;
+				case "done":
+					this.lists = this.getDoneLists
+					break;
+				case "not-done":
+					this.lists = this.getNotDoneLists
+					break;
+			}
+		},
+
 		listClick(id) {
 			this.setCurrentList(id, event)
 			event.target.parentElement.children.forEach(i => {
-				console.log(i.className)
 				i.className = i.className.replaceAll('active', "")
 			})
 			event.target.className = event.target.className.concat('active')

@@ -1,8 +1,15 @@
 <template>
-  <div class="task-item" :class="{done : task.completed}" ref="task">
+  <div class="task-item" :class="{done : task.completed}" ref="task" tabindex="0">
+
     <div class="pre">
-      <input type="checkbox"  :checked="task.completed" v-model="completed" @change="changeComplete($event)" >
-      <span> {{ task.title }} </span>
+      <svg v-if="task.important" width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-circle-fill mr-2" fill="red" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="8"/>
+      </svg>
+      <svg v-else width="0.8em" height="0.8em" viewBox="0 0 16 16" class="bi bi-circle-fill mr-2" fill="green" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="8"/>
+      </svg>
+      <input type="checkbox"  class="mr-2" :checked="task.completed" v-model="completed" @change="changeComplete()" >
+      <span> {{ task.title }}</span>
     </div>
     
     <div class="post">
@@ -36,15 +43,13 @@ export default {
       }
       this.deleteTask(toDelete);
     },
-    changeComplete(event) {
+    changeComplete() {
       this.$refs.task.classList.toggle('done')
-      let taskToUpdate = {
-        ...this.task,
-        completed: this.completed,
-      }
+
       let toUpdate = {
         currentListId: this.currentList.id,
-        taskToUpdate
+        taskId: this.task.id,
+        completed: this.completed
       }
       this.updateTask(toUpdate)
     },
@@ -63,6 +68,17 @@ export default {
     border: 1px solid #ccc;
     border-radius: 3px;
 
+    transition: background-color 0.5s ease;
+
+    &:focus {
+      border: #166629be 2px solid;
+      outline: none;
+    }
+
+  .pre {
+    display: flex;
+    align-items: center;
+  }
     .post {
       display: flex;
       align-items: center;

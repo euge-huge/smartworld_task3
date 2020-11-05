@@ -7,22 +7,28 @@ export default new Vuex.Store({
   state: {
     lists: [
       {id: 1, title: "Список дел на 21.12", tasks: [
-        {id: 1, title: "Купить молоко", createdAt: 1327611110417 ,completed: false},
-        {id: 2, title: "Сделать домашку", createdAt: 1327611110417 ,completed: false},
-        {id: 3, title: "Сходить в кино", createdAt: 1327611110417 ,completed: false},
+        {id: 11, title: "Купить молоко", important: true, createdAt: 1327611110417 ,completed: false},
+        {id: 12, title: "Сделать домашку", important: false, createdAt: 1327611110417 ,completed: true},
+        {id: 13, title: "Сходить в кино", important: true, createdAt: 1327611110417 ,completed: false},
       ]},
       {id: 2, title: "Купить в магазине", tasks: [
-        {id: 1, title: "Мороженное", createdAt: 1327611110417 ,completed: true},
-        {id: 2, title: "Хлеб", createdAt: 1327611110417 ,completed: true},
-        {id: 3, title: "Корм для рыбки", createdAt: 1327611110417 , completed: false},
+        {id: 21, title: "Мороженное", important: false, createdAt: 1327611110417 ,completed: true},
+        {id: 22, title: "Хлеб", important: true, createdAt: 1327611110417 ,completed: true},
+        {id: 23, title: "Корм для рыбки", important: false, createdAt: 1327611110417 , completed: true},
       ]}
     ],
 
     currentList: null,
   },
   getters: {
-    getLists: s => s.lists,
-    getCurrentList: s => s.currentList
+    getAllLists: s => s.lists,
+    getCurrentList: s => s.currentList,
+    getDoneLists: s => s.lists.filter(list => {
+      if (!list.tasks.find(task => task.completed == false) && list.tasks.length != 0) return true
+    }),
+    getNotDoneLists: s => s.lists.filter(list => {
+      if (list.tasks.find(task => task.completed == false) && list.tasks.length != 0) return true
+    })
    },
   mutations: {
     deleteList(state, id) {
@@ -42,10 +48,7 @@ export default new Vuex.Store({
     },
 
     updateTask(state, toUpdate) {
-      console.log(toUpdate)
-      console.log(state.lists.find(list => (list.id == toUpdate.currentListId)).tasks.find(task => task.id = toUpdate.taskToUpdate.id))
-
-      //state.lists.find(list => (list.id == toUpdate.currentListId)).tasks.find(task => task.id = toUpdate.taskToUpdate.id) = toUpdate.taskToUpdate
+      state.lists.find((list) => (list.id == toUpdate.currentListId)).tasks.find(task => task.id == toUpdate.taskId).completed = toUpdate.completed
     },
 
     deleteTask(state, toDelete) {

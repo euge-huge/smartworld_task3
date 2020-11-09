@@ -8,30 +8,35 @@
     <input class="form-check-input" type="checkbox" id="importance-check" v-model="important">
     <label class="form-check-label" for="importance-check">Срочно</label>
   </div>
-  <button type="submit" class="btn btn-primary" @click.prevent="addNew" :disabled="!currentList" >Добавить</button>
+  <button v-if="!tasksBtnLoading" type="submit" class="btn btn-primary" @click.prevent="addNew" :disabled="!currentList" >Добавить</button>
+  <button v-else class="btn btn-primary" type="button" disabled>
+    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+    Loading...
+  </button>
 </form>
 </template>
 
 <script>
-import {mapMutations, mapState} from 'vuex'
+import {mapActions, mapState} from 'vuex'
+import axios from 'axios'
 export default {
   data: () => ({
     title: "",
-    important: ""
+    important: false
   }),
   computed: {
-    ...mapState(['currentList'])
+    ...mapState(['currentList', 'tasksBtnLoading'])
   },
   methods: {
-    ...mapMutations(['addNewTask']),
+    ...mapActions(['addTask']),
 
-    addNew() {
+    async addNew() {
       if (this.title.trim()) {
         let toAdd = {
-        newTask: {id: Date.now(), title: this.title, important: this.important, completed: false, createdAt: Date.now()},
-        idOfList: this.currentList.id
+        newTask: { title: this.title, important: this.important, completed: false},
+        idOfList: this.currentList._id
       }
-      this.addNewTask(toAdd);
+      await this.addTask(toAdd);
       this.title = ""
       this.important = false
       }

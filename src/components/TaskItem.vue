@@ -14,13 +14,13 @@
     
     <div class="post">
       <span>{{ new Date(task.createdAt).toLocaleDateString("ru-RU", {hour: 'numeric', minute: 'numeric', second: 'numeric'}) }}</span>
-      <div class="delete-btn" @click="deleteTaskBtn(task.id)" ></div>
+      <div class="delete-btn" @click="deleteTaskBtn(task._id)" ></div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapMutations, mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   props: {
     task: Object
@@ -28,17 +28,18 @@ export default {
   data: () => ({
     completed: ''
   }),
-  mounted() {
+  beforeMount() {
+    console.log(this.task.completed)
     this.completed = this.task.completed
   },
   computed: {
     ...mapState(['currentList']),
   },
   methods: {
-    ...mapMutations(['deleteTask', 'updateTask']),
+    ...mapActions(['deleteTask', 'updateTask']),
     deleteTaskBtn(id) {
       let toDelete = {
-        currId: this.currentList.id,
+        currId: this.currentList._id,
         taskId: id
       }
       this.deleteTask(toDelete);
@@ -47,8 +48,8 @@ export default {
       this.$refs.task.classList.toggle('done')
 
       let toUpdate = {
-        currentListId: this.currentList.id,
-        taskId: this.task.id,
+        currentListId: this.currentList._id,
+        taskId: this.task._id,
         completed: this.completed
       }
       this.updateTask(toUpdate)

@@ -5,9 +5,8 @@
       <div class="app-content">
         <div v-if="currentList" class="tasks">
           <MessageLog v-if="!currentList.tasks.length" msg="Задач пока нет" sub="Добавьте новую, используя форму ниже"/>
-          <TaskItem v-for="task in currentList.tasks" :key="task.id" :task="task"/>
+          <TaskItem v-for="task in currentList.tasks" :key="task._id" :task="task"/>
         </div>
-        
         <div v-else class="tasks no">
           <MessageLog msg="Нет активного списка" sub="Выберите список слева, или создайте новый, если его нет"/>
         </div>
@@ -23,7 +22,7 @@ import Sidebar from "./components/Sidebar.vue";
 import TaskItem from "./components/TaskItem.vue";
 import AddItemForm from "./components/AddItemForm.vue";
 import MessageLog from "./components/MessageLog.vue";
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 export default {
   components: {
     Sidebar,
@@ -33,6 +32,9 @@ export default {
   },
   computed: {
     ...mapState(['currentList'])
+  },
+  methods: {
+    ...mapActions(['fetchLists'])
   }
 }
 </script>

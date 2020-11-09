@@ -8,10 +8,16 @@
 			</select>
 		</div>
 
-		<ul v-if="lists.length" class="list-group">
-			<li class="list-link list-group-item " v-for="list in lists" :key="list.id" @click="listClick(list.id, $event)">
+		<div v-if="listsLoading" class="d-flex justify-content-center align-items-center">
+			<div class="spinner-grow text-primary" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+		</div>
+
+		<ul v-else-if="lists.length" class="list-group">
+			<li class="list-link list-group-item " v-for="list in lists" :key="list._id" @click="listClick(list._id, $event)">
 				{{list.title}}
-				<div class="cl-btn-7" @click.prevent="() => {deleteList(list.id); setCurrentList(null); filterList()}">
+				<div class="cl-btn-7" @click.prevent="deleteListBtn(list._id)">
 				</div>
 			</li>
 		</ul>
@@ -25,7 +31,11 @@
 				<label for="createListItem">Создайте список</label>
 				<input type="text" class="form-control" id="createListItem" v-model="titleOfNewList">
 			</div>
-			<button type="submit" class="btn btn-primary" @click.prevent="createListBtn" >Создать</button>
+			<button  v-if="!listsBtnLoading" type="submit" class="btn btn-primary" @click.prevent="createListBtn" >Создать</button>
+			<button v-else class="btn btn-primary" type="button" disabled>
+				<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>
+				Loading...
+			</button>
 		</form>
 	</div>
 </template>
@@ -40,16 +50,19 @@ export default {
 		lists: []
 	}),
 	computed: {
+		...mapState(['listsLoading', 'listsBtnLoading']),
 		...mapGetters(['getAllLists','getDoneLists','getNotDoneLists'])
 	},
-	beforeMount() {
+	async beforeMount() {
+		await this.fetchLists();
 		this.lists = this.getAllLists
 	},
 	methods: {
-		...mapActions(['deleteList', 'addNewList']),
+		...mapActions(['deleteList', 'addNewList', "fetchLists", "fetchTasks"]),
 		...mapMutations(['setCurrentList']),
 
 		filterList() {
+			this.setCurrentList(null); 
 			switch (this.selectFilter) {
 				case "all":
 					this.lists = this.getAllLists
@@ -63,15 +76,20 @@ export default {
 			}
 		},
 
-		listClick(id) {
-			this.setCurrentList(id, event)
+		async listClick(id, event) {
+			this.setCurrentList(id)
 			event.target.parentElement.children.forEach(i => {
 				i.className = i.className.replaceAll('active', "")
 			})
 			event.target.className = event.target.className.concat('active')
 
 		},
-		createListBtn() {
+
+		async deleteListBtn(id) {
+			await this.deleteList(id);
+			this.filterList()
+		},
+		async createListBtn() {
 			if (this.titleOfNewList.trim()) {
 				const listToAdd = {
 					id: Date.now(),
@@ -79,7 +97,7 @@ export default {
 					tasks: []
 				}
 
-				this.addNewList(listToAdd);
+				await this.addNewList(listToAdd);
 
 				this.titleOfNewList = ""
 			}
